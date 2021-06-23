@@ -1,0 +1,66 @@
+apply plugin: 'com.android.application'
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        applicationId "com.qiniu.pili.droid.shortvideo.demo"
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 33
+        versionName "3.2.2"
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+        buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    // 上传 sdk ，不使用上传功能无需依赖
+    implementation 'com.qiniu:qiniu-android-sdk:7.6.4'
+    // 播放器 sdk ，非必须
+    implementation files('libs/pldroid-player-2.1.8.jar')
+    // UI 控件库，非必须
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.7'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    implementation 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.10.6'
+    // 图片加载库，非必须
+    implementation files('libs/universal-image-loader-1.9.4.jar')
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    // 为了规避单个 DEX 64K 方法数上限，非必须
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    if (buildWithShortVideoLibrary) {
+        implementation project(':library')
+    } else {
+        // 短视频 SDK jar 包，必须依赖
+        implementation files('libs/pldroid-shortvideo-3.2.2.jar')
+    }
+}
